@@ -1,6 +1,12 @@
 'use client';
 
-import { generateStorageKey, getAllPlayRecords, PlayRecord } from './db.client';
+import {
+  getAllPlayRecords,
+  PlayRecord,
+  generateStorageKey,
+  forceRefreshPlayRecordsCache,
+  savePlayRecord,
+} from './db.client';
 
 // 缓存键
 const WATCHING_UPDATES_CACHE_KEY = 'moontv_watching_updates';
@@ -58,6 +64,10 @@ const updateListeners = new Set<(hasUpdates: boolean) => void>();
 export async function checkWatchingUpdates(): Promise<void> {
   try {
     console.log('开始检查追番更新...');
+
+    // 强制刷新播放记录缓存，确保获取最新的播放记录数据
+    console.log('强制刷新播放记录缓存以确保数据同步...');
+    forceRefreshPlayRecordsCache();
 
     // 检查缓存是否有效
     const lastCheckTime = parseInt(
@@ -119,7 +129,11 @@ export async function checkWatchingUpdates(): Promise<void> {
       try {
         // 从存储key中解析出videoId
         const [sourceName, videoId] = record.id.split('+');
-        const updateInfo = await checkSingleRecordUpdate(record, videoId);
+        const updateInfo = await checkSingleRecordUpdate(
+          record,
+          videoId,
+          sourceName
+        );
 
         // 使用从 checkSingleRecordUpdate 返回的 protectedTotalEpisodes（已经包含了保护机制）
         const protectedTotalEpisodes = updateInfo.latestEpisodes;
@@ -227,7 +241,8 @@ export async function checkWatchingUpdates(): Promise<void> {
  */
 async function checkSingleRecordUpdate(
   record: PlayRecord,
-  videoId: string
+  videoId: string,
+  storageSourceName?: string
 ): Promise<{
   hasUpdate: boolean;
   hasContinueWatching: boolean;
@@ -325,6 +340,28 @@ async function checkSingleRecordUpdate(
       console.log(
         `${record.title} 发现新集数: ${originalTotalEpisodes} -> ${latestEpisodes} 集，新增${newEpisodes}集`
       );
+      // 如果检测到新集数，同时更新播放记录的total_episodes
+      if (latestEpisodes > record.total_episodes) {
+        console.log(
+          `🔄 更新播放记录集数: ${record.title} ${record.total_episodes} -> ${latestEpisodes}`
+        );
+        try {
+          const updatedRecord: PlayRecord = {
+            ...record,
+            total_episodes: latestEpisodes,
+          };
+
+          // 保存更新后的播放记录，使用解析出的sourceName确保key一致
+          await savePlayRecord(
+            storageSourceName || record.source_name,
+            videoId,
+            updatedRecord
+          );
+          console.log(`✅ 播放记录集数更新成功: ${record.title}`);
+        } catch (error) {
+          console.error(`❌ 更新播放记录集数失败: ${record.title}`, error);
+        }
+      }
     }
 
     if (hasContinueWatching) {

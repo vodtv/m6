@@ -172,7 +172,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
 
       {/* 筛选面板 */}
       {isVisible && (
-        <div className='absolute top-full left-0 mt-2 w-96 max-w-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-lg shadow-lg z-50 p-4'>
+        <div className='absolute top-full left-0 mt-2 w-96 max-w-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4'>
           <div className='flex items-center justify-between mb-4'>
             <h3 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
               {contentType === 'movie' ? '电影' : '电视剧'}筛选
@@ -210,7 +210,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                       e.target.value ? parseInt(e.target.value) : undefined
                     )
                   }
-                  className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                   min='1900'
                   max={new Date().getFullYear()}
                 />
@@ -224,7 +224,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                       e.target.value ? parseInt(e.target.value) : undefined
                     )
                   }
-                  className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                   min='1900'
                   max={new Date().getFullYear()}
                 />
@@ -247,7 +247,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                       e.target.value ? parseFloat(e.target.value) : undefined
                     )
                   }
-                  className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                   min='0'
                   max='10'
                   step='0.1'
@@ -262,7 +262,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                       e.target.value ? parseFloat(e.target.value) : undefined
                     )
                   }
-                  className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                   min='0'
                   max='10'
                   step='0.1'
@@ -285,7 +285,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                     e.target.value ? parseFloat(e.target.value) : undefined
                   )
                 }
-                className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 min='0'
               />
             </div>
@@ -305,7 +305,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                     e.target.value ? parseInt(e.target.value) : undefined
                   )
                 }
-                className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 min='0'
               />
             </div>
@@ -326,7 +326,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                       e.target.value ? parseInt(e.target.value) : undefined
                     )
                   }
-                  className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                   min='1'
                 />
               </div>
@@ -403,7 +403,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                 <select
                   value={localFilters.sortBy || 'rating'}
                   onChange={(e) => updateFilter('sortBy', e.target.value)}
-                  className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 >
                   {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -414,7 +414,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                 <select
                   value={localFilters.sortOrder || 'desc'}
                   onChange={(e) => updateFilter('sortOrder', e.target.value)}
-                  className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 >
                   <option value='desc'>降序</option>
                   <option value='asc'>升序</option>
@@ -452,7 +452,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
                     e.target.value ? parseInt(e.target.value) : undefined
                   )
                 }
-                className='w-full px-3 py-2 border border-gray-300/50 dark:border-gray-600/50 rounded-md text-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm text-gray-900 dark:text-gray-100'
+                className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
               >
                 <option value=''>不限制</option>
                 <option value='50'>50 个</option>
@@ -471,7 +471,7 @@ export const TMDBFilterPanel: React.FC<TMDBFilterPanelProps> = ({
               </span>
               <button
                 onClick={applyFilters}
-                className='px-4 py-2 bg-blue-600/80 dark:bg-blue-700/80 backdrop-blur-sm text-white rounded-md text-sm font-medium hover:bg-blue-700/80 dark:hover:bg-blue-600/80 transition-colors'
+                className='px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors'
               >
                 应用筛选
               </button>

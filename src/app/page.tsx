@@ -101,7 +101,7 @@ function HomeClient() {
 
         // 并行获取热门电影、热门剧集和热门综艺
         const [moviesData, tvShowsData, varietyShowsData, bangumiCalendarData] =
-          await Promise.all([
+          await Promise.allSettled([
             getDoubanCategories({
               kind: 'movie',
               category: '热门',
@@ -112,19 +112,66 @@ function HomeClient() {
             GetBangumiCalendarData(),
           ]);
 
-        if (moviesData.code === 200) {
-          setHotMovies(moviesData.list);
+        // 处理电影数据
+        if (
+          moviesData.status === 'fulfilled' &&
+          moviesData.value?.code === 200
+        ) {
+          setHotMovies(moviesData.value.list);
+        } else {
+          console.warn(
+            '获取热门电影失败:',
+            moviesData.status === 'rejected'
+              ? moviesData.reason
+              : '数据格式错误'
+          );
         }
 
-        if (tvShowsData.code === 200) {
-          setHotTvShows(tvShowsData.list);
+        // 处理剧集数据
+        if (
+          tvShowsData.status === 'fulfilled' &&
+          tvShowsData.value?.code === 200
+        ) {
+          setHotTvShows(tvShowsData.value.list);
+        } else {
+          console.warn(
+            '获取热门剧集失败:',
+            tvShowsData.status === 'rejected'
+              ? tvShowsData.reason
+              : '数据格式错误'
+          );
         }
 
-        if (varietyShowsData.code === 200) {
-          setHotVarietyShows(varietyShowsData.list);
+        // 处理综艺数据
+        if (
+          varietyShowsData.status === 'fulfilled' &&
+          varietyShowsData.value?.code === 200
+        ) {
+          setHotVarietyShows(varietyShowsData.value.list);
+        } else {
+          console.warn(
+            '获取热门综艺失败:',
+            varietyShowsData.status === 'rejected'
+              ? varietyShowsData.reason
+              : '数据格式错误'
+          );
         }
 
-        setBangumiCalendarData(bangumiCalendarData);
+        // 处理bangumi数据，防止接口失败导致页面崩溃
+        if (
+          bangumiCalendarData.status === 'fulfilled' &&
+          Array.isArray(bangumiCalendarData.value)
+        ) {
+          setBangumiCalendarData(bangumiCalendarData.value);
+        } else {
+          console.warn(
+            'Bangumi接口失败或返回数据格式错误:',
+            bangumiCalendarData.status === 'rejected'
+              ? bangumiCalendarData.reason
+              : '数据格式错误'
+          );
+          setBangumiCalendarData([]);
+        }
       } catch (error) {
         console.error('获取推荐数据失败:', error);
       } finally {
@@ -431,7 +478,7 @@ function HomeClient() {
                                 anime.images?.medium ||
                                 anime.images?.small ||
                                 anime.images?.grid ||
-                                ''
+                                '/placeholder-poster.jpg'
                               }
                               douban_id={anime.id}
                               rate={anime.rating?.score?.toFixed(1) || ''}
