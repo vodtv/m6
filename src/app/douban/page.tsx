@@ -807,7 +807,7 @@ function DoubanPageClient() {
       return '来自 Bangumi 番组计划的精选内容';
     }
     if (type === 'short-drama') {
-      return '来自采集站的精选短剧内容';
+      return '来自豆瓣的短剧标签内容';
     }
     return '来自豆瓣的精选内容';
   };

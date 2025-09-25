@@ -193,7 +193,7 @@ async function fetchDoubanShortDrama(
 /** 解析HTML内容 - 修改为保持中文数据 */
 function parseShortDramaHtml(html: string): ShortDramaItem[] {
   const dlPattern =
-    /<dl[^>]*>[\s\S]*?<a href="https?:\/\/movie\.douban\.com\/subject\/(\d+)\/[^"]*"[^>]*>[\s\S]*?<img[^>]+src="([^"]+)"[^>]*>[\s\S]*?<a[^>]+class="title"[^>]*>([^<]+)<\/a>[\s\S]*?<div class="desc">([\s\S]*?)<\/div>[\s\S]*?(?:<span class="rating_nums">([^<]+)<\/span>)?/g;
+    /<dl[^>]*>\s*<dt>\s*<a href="https?:\/\/movie\.douban\.com\/subject\/(\d+)\/[^"]*"[^>]*>\s*<img[^>]+src="([^"]+)"[^>]*>\s*<\/a>\s*<\/dt>\s*<dd>\s*<a href="https?:\/\/movie\.douban\.com\/subject\/\d+\/[^"]*"[^>]*class="title"[^>]*>([^<]+)<\/a>[\s\S]*?<div class="desc">\s*([^<]*?)\s*<\/div>\s*(?:<div class="rating">\s*<span class="allstar\d+"><\/span>\s*<span class="rating_nums">([^<]*)<\/span>\s*<\/div>)?/g;
 
   const results: ShortDramaItem[] = [];
   let match;
@@ -270,3 +270,4 @@ function matchYear(resultYear: string, filterYear: string): boolean {
 
   return true;
 }
+

@@ -41,7 +41,7 @@ interface VirtualDoubanGridProps {
 // 渐进式加载配置
 const INITIAL_BATCH_SIZE = 25;
 const LOAD_MORE_BATCH_SIZE = 25;
-const LOAD_MORE_THRESHOLD = 3; // 距离底部还有3行时开始加载
+const LOAD_MORE_THRESHOLD = 5; // 距离底部还有3行时开始加载
 
 export const VirtualDoubanGrid: React.FC<VirtualDoubanGridProps> = ({
   doubanData,
@@ -95,18 +95,19 @@ export const VirtualDoubanGrid: React.FC<VirtualDoubanGridProps> = ({
 
   // 检查是否还有更多项目可以加载（虚拟层面）
   const hasNextVirtualPage = displayItemCount < totalItemCount;
+  
+  // 检查是否需要从服务器加载更多数据
+  const needsServerData = displayItemCount >= totalItemCount * 0.8 && hasMore && !isLoadingMore;
 
   // 防止重复调用onLoadMore的ref
   const lastLoadMoreCallRef = useRef<number>(0);
-  const isProcessingRef = useRef(false);
 
   // 加载更多项目（虚拟层面）
   const loadMoreVirtualItems = useCallback(() => {
-    if (isVirtualLoadingMore || isProcessingRef.current) return;
-
+    if (isVirtualLoadingMore) return;
+    
     setIsVirtualLoadingMore(true);
-    isProcessingRef.current = true;
-
+    
     // 模拟异步加载
     setTimeout(() => {
       setVisibleItemCount((prev) => {
@@ -114,17 +115,12 @@ export const VirtualDoubanGrid: React.FC<VirtualDoubanGridProps> = ({
 
         // 如果虚拟数据即将用完，触发服务器数据加载
         if (newCount >= totalItemCount * 0.8 && hasMore && !isLoadingMore) {
-          const now = Date.now();
-          if (now - lastLoadMoreCallRef.current > 1000) {
-            lastLoadMoreCallRef.current = now;
-            onLoadMore();
-          }
+          onLoadMore();
         }
 
         return newCount;
       });
       setIsVirtualLoadingMore(false);
-      isProcessingRef.current = false;
     }, 100);
   }, [
     isVirtualLoadingMore,
@@ -194,37 +190,6 @@ export const VirtualDoubanGrid: React.FC<VirtualDoubanGridProps> = ({
   // 生成骨架屏数据
   const skeletonData = Array.from({ length: 25 }, (_, index) => index);
 
-  // 延迟执行加载操作的函数
-  const scheduleLoadMore = useCallback(() => {
-    if (isVirtualLoadingMore || isProcessingRef.current) return;
-
-    // 使用 setTimeout 确保在渲染周期外执行
-    setTimeout(() => {
-      if (hasNextVirtualPage) {
-        loadMoreVirtualItems();
-      } else if (
-        displayItemCount >= totalItemCount * 0.8 &&
-        hasMore &&
-        !isLoadingMore
-      ) {
-        const now = Date.now();
-        if (now - lastLoadMoreCallRef.current > 1000) {
-          lastLoadMoreCallRef.current = now;
-          onLoadMore();
-        }
-      }
-    }, 0);
-  }, [
-    hasNextVirtualPage,
-    isVirtualLoadingMore,
-    isLoadingMore,
-    hasMore,
-    loadMoreVirtualItems,
-    onLoadMore,
-    displayItemCount,
-    totalItemCount,
-  ]);
-
   return (
     <div ref={containerRef} className='w-full'>
       {loading ? (
@@ -283,10 +248,20 @@ export const VirtualDoubanGrid: React.FC<VirtualDoubanGridProps> = ({
             // 1. visibleCells: 真实可见的单元格范围
             // 2. allCells: 包含overscan的所有渲染单元格范围
             const { rowStopIndex: visibleRowStopIndex } = visibleCells;
-
-            // 当滚动到接近底部时触发加载
+            const { rowStopIndex: allRowStopIndex } = allCells;
+            
+            // 性能优化：只基于真实可见区域判断加载，避免overscan区域误触发
             if (visibleRowStopIndex >= rowCount - LOAD_MORE_THRESHOLD) {
-              scheduleLoadMore();
+              if (hasNextVirtualPage && !isVirtualLoadingMore) {
+                loadMoreVirtualItems();
+              } else if (needsServerData) {
+                // 防止重复调用onLoadMore - 使用时间戳限制
+                const now = Date.now();
+                if (now - lastLoadMoreCallRef.current > 1000) { // 1秒内只调用一次
+                  lastLoadMoreCallRef.current = now;
+                  onLoadMore();
+                }
+              }
             }
           }}
         />
@@ -316,3 +291,4 @@ export const VirtualDoubanGrid: React.FC<VirtualDoubanGridProps> = ({
 };
 
 export default VirtualDoubanGrid;
+
