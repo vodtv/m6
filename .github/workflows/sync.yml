@@ -42,19 +42,8 @@ jobs:
         run: |
           git push origin main
 
-      # Step 5: 检查 VERSION.txt 和 CHANGELOG 是否更新
-      - name: Check if VERSION.txt or CHANGELOG changed
-        id: check_files
-        run: |
-          git fetch origin main
-          LAST_COMMIT=$(git log -1 --pretty=format:%H)
-          echo "Last commit: $LAST_COMMIT"
-
-          if git diff-tree --no-commit-id --name-only -r $LAST_COMMIT | grep -E '^(VERSION.txt|CHANGELOG)$'; then
-            echo "files_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "files_changed=false" >> $GITHUB_OUTPUT
-          fi
+  
+ 
 
       # Step 6: 读取 VERSION.txt 版本号
       - name: Read VERSION.txt
