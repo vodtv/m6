@@ -55,19 +55,10 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       # Step 7: 检查 tag 是否存在
-      - name: Check if tag exists
-        id: check_tag
-        if: steps.read_version.outputs.version != ''
-        run: |
-          if git rev-parse "refs/tags/${{ steps.read_version.outputs.version }}" >/dev/null 2>&1; then
-            echo "tag_exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "tag_exists=false" >> $GITHUB_OUTPUT
-          fi
+ 
 
       # Step 8: 仅在满足条件时触发 release.yml
       - name: Trigger Release workflow
-        if: steps.check_files.outputs.files_changed == 'true' && steps.check_tag.outputs.tag_exists == 'false'
         run: |
           echo "New version detected: ${{ steps.read_version.outputs.version }}. Triggering release.yml..."
           curl -X POST \
@@ -76,10 +67,4 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/release.yml/dispatches \
             -d '{"ref":"main"}'
 
-      - name: Delete workflow runs
-        uses: Mattraks/delete-workflow-runs@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          retain_days: 0
-          keep_minimum_runs: 2
+  
