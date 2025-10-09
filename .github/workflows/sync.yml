@@ -46,13 +46,7 @@ jobs:
  
 
       # Step 6: 读取 VERSION.txt 版本号
-      - name: Read VERSION.txt
-        id: read_version
-        if: steps.check_files.outputs.files_changed == 'true'
-        run: |
-          VERSION=$(cat VERSION.txt | tr -d ' \n')
-          echo "VERSION=$VERSION"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
 
       # Step 7: 检查 tag 是否存在
  
